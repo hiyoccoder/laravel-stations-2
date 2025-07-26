@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Movies;
 
-class MoviesController extends Controller
+use App\Movie;
+
+class MovieController extends Controller
 {
     public function getMovies()
     {
-        $movies = Movies::all();
+        $movies = Movie::all();
         return view('getMovies', ['movies' => $movies]);
     }
 }

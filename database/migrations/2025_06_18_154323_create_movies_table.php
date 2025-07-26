@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
-            $table->text('title')->comment('タイトル');
-            $table->text('image_url')->comment('画像URL');
+            $table->string('title');                    // ファクトリーの 'title'
+            $table->string('image_url')->nullable();    // ファクトリーの 'image_url'
+            $table->integer('published_year');          // ファクトリーの 'published_year'
+            $table->text('description')->nullable();    // ファクトリーの 'description'
+            $table->boolean('is_showing')->default(false); // ファクトリーの 'is_showing'
             $table->timestamps();
         });
     }
