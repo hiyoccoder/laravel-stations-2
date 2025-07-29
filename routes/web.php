@@ -23,4 +23,6 @@ Route::get('/getPractice', [PracticeController::class, 'getPractice'])->name('ge
 Route::get('/movies', [MovieController::class, 'getMovies'])->name('movies.index');
 Route::get('/admin/movies', [AdminMovieController::class, 'AdminMovies'])->name('admin.movies.index');
 Route::get('/admin/movies/create', [AdminMovieController::class, 'AdminMoviesCreate'])->name('admin.movies.create');
-Route::post('/admin/movies/store', [AdminMovieController::class, 'store'])->name('admin.movies.store');
+Route::post('/admin/movies/store', [AdminMovieController::class, 'AdminMoviesStore'])->name('admin.movies.store');
+Route::get('/admin/movies/{id}/edit', [AdminMovieController::class, 'AdminMoviesEdit'])->name('admin.movies.edit');
+Route::patch('/admin/movies/{id}/update', [AdminMovieController::class, 'AdminMoviesUpdate'])->name('admin.movies.update');

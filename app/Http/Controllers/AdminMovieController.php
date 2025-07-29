@@ -19,7 +19,7 @@ class AdminMovieController extends Controller
         return view('admin.movies.create');
     }
 
-    public function store(Request $request)
+    public function AdminMoviesStore(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|unique:movies,title',
@@ -41,5 +41,28 @@ class AdminMovieController extends Controller
         $movie->save();
 
         return redirect('/admin/movies')->with('success', '映画が正常に登録されました。');
+    }
+
+    public function AdminMoviesEdit($id)
+    {
+        $movie = Movie::findOrFail($id);
+        return view('admin.movies.edit', compact('movie'));
+    }
+
+    public function AdminMoviesUpdate(Request $request, $id)
+    {
+        $movie = Movie::find($id);
+
+        $validated = $request->validate([
+            'title' => 'required|unique:movies,title',
+            'image_url' => 'required|url',
+            'published_year' => 'required',
+            'is_showing' => 'boolean',
+            'description' => 'required',
+        ]);
+
+        $movie->update($validated);
+
+        return redirect('/admin/movies')->with('success', '映画が正常に更新されました。');
     }
 }

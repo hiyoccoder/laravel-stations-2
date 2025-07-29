@@ -13,4 +13,12 @@ class Movie extends Model
     {
         return $this->is_showing ? '上映中' : '上映予定';
     }
+
+    protected $fillable = [
+        'title',
+        'image_url',
+        'published_year',
+        'is_showing',
+        'description'
+    ];
 }

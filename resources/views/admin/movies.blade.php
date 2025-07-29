@@ -29,6 +29,11 @@
                 <td>{{ $movie->description }}</td>
                 <td>{{ $movie->created_at }}</td>
                 <td>{{ $movie->updated_at }}</td>
+                <td>
+                    <a href="{{ route('admin.movies.edit', $movie) }}">
+                        <button>編集</button>
+                    </a>
+                </td>
             </tr>
             @endforeach
         </tbody>
