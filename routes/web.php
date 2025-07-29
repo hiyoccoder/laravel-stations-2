@@ -20,3 +20,4 @@ Route::get('/practice2', [PracticeController::class, 'sample2']);
 Route::get('/practice3', [PracticeController::class, 'sample3']);
 Route::get('/getPractice', [PracticeController::class, 'getPractice']);
 Route::get('/movies', [movieController::class, 'getMovies']);
+Route::get('/admin/movies', [movieController::class, 'AdminMovies']);

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Movie extends Model
 {
     use HasFactory;
+
+    public function getIsShowingTextAttribute()
+    {
+        return $this->is_showing ? '上映中' : '上映予定';
+    }
 }
