@@ -65,4 +65,15 @@ class AdminMovieController extends Controller
 
         return redirect('/admin/movies')->with('success', '映画が正常に更新されました。');
     }
+
+    public function AdminMoviesDestroy(Request $request)
+    {
+        $id = $request->route('id');
+
+        $movie = Movie::findOrFail($id);
+
+        $movie->delete();
+
+        return redirect('/admin/movies')->with('success', '映画が正常に削除されました。');
+    }
 }

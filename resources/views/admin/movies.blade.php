@@ -34,6 +34,13 @@
                         <button>編集</button>
                     </a>
                 </td>
+                <td>
+                    <form method="post" action="{{ route('admin.movies.destroy', $movie) }}">
+                        @csrf
+                        @method('delete')
+                        <button>削除</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>
