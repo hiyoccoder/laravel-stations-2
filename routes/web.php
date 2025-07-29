@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\AdminMovieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +16,11 @@ use App\Http\Controllers\MovieController;
 |
 */
 
-Route::get('/practice', [PracticeController::class, 'sample']);
-Route::get('/practice2', [PracticeController::class, 'sample2']);
-Route::get('/practice3', [PracticeController::class, 'sample3']);
-Route::get('/getPractice', [PracticeController::class, 'getPractice']);
-Route::get('/movies', [movieController::class, 'getMovies']);
-Route::get('/admin/movies', [movieController::class, 'AdminMovies']);
+Route::get('/practice', [PracticeController::class, 'sample'])->name('practice');
+Route::get('/practice2', [PracticeController::class, 'sample2'])->name('practice2');
+Route::get('/practice3', [PracticeController::class, 'sample3'])->name('practice3');
+Route::get('/getPractice', [PracticeController::class, 'getPractice'])->name('getPractice');
+Route::get('/movies', [MovieController::class, 'getMovies'])->name('movies.index');
+Route::get('/admin/movies', [AdminMovieController::class, 'AdminMovies'])->name('admin.movies.index');
+Route::get('/admin/movies/create', [AdminMovieController::class, 'AdminMoviesCreate'])->name('admin.movies.create');
+Route::post('/admin/movies/store', [AdminMovieController::class, 'store'])->name('admin.movies.store');
