@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdminMovieController extends Controller
 {
-
     public function AdminMovies()
     {
         $movies = Movie::with('genre')->get();
@@ -30,34 +29,26 @@ class AdminMovieController extends Controller
             'published_year' => 'required',
             'is_showing' => 'boolean',
             'description' => 'required',
-            'genre' => 'required|string|max:255', // ジャンル必須
+            'genre' => 'required|string|max:255',
         ]);
 
         try {
-            $movie = DB::transaction(function () use ($validated, $request) {
-                // ジャンルの登録
-                $genre = Genre::firstOrCreate(
-                    ['name' => $validated['genre']]
-                );
+            DB::transaction(function () use ($validated, $request) {
+                $genre = Genre::firstOrCreate(['name' => $validated['genre']]);
 
-                // 映画の作成
-                $movie = new Movie();
-                $movie->title = $validated['title'];
-                $movie->image_url = $validated['image_url'];
-                $movie->published_year = $validated['published_year'];
-                $movie->is_showing = $request->has('is_showing');
-                $movie->description = $validated['description'];
-                $movie->genre_id = $genre->id; // 外部キーを設定
-
-                $movie->save();
-
-                return $movie;
+                Movie::create([
+                    'title' => $validated['title'],
+                    'image_url' => $validated['image_url'],
+                    'published_year' => $validated['published_year'],
+                    'is_showing' => $request->boolean('is_showing'),
+                    'description' => $validated['description'],
+                    'genre_id' => $genre->id,
+                ]);
             });
-            return redirect('/admin/movies')->with('success', '映画が正常に登録されました。');
+
+            return redirect('/admin/movies');
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', '映画の登録に失敗しました。: ' . $e->getMessage());
+            throw $e; // 500エラー
         }
     }
 
@@ -70,7 +61,7 @@ class AdminMovieController extends Controller
 
     public function AdminMoviesUpdate(Request $request, $id)
     {
-        $movie = Movie::find($id);
+        $movie = Movie::findOrFail($id);
 
         $validated = $request->validate([
             'title' => 'required|unique:movies,title,' . $id,
@@ -82,30 +73,22 @@ class AdminMovieController extends Controller
         ]);
 
         try {
-            $updatedMovie = DB::transaction(function () use ($validated, $request, $movie) {
-                // ジャンルの取得または新規作成
-                $genre = Genre::firstOrCreate(
-                    ['name' => $validated['genre']]
-                );
+            DB::transaction(function () use ($validated, $request, $movie) {
+                $genre = Genre::firstOrCreate(['name' => $validated['genre']]);
 
-                // 映画の更新
-                $movie->title = $validated['title'];
-                $movie->image_url = $validated['image_url'];
-                $movie->published_year = $validated['published_year'];
-                $movie->is_showing = $request->has('is_showing');
-                $movie->description = $validated['description'];
-                $movie->genre_id = $genre->id;
-
-                $movie->save();
-
-                return $movie;
+                $movie->update([
+                    'title' => $validated['title'],
+                    'image_url' => $validated['image_url'],
+                    'published_year' => $validated['published_year'],
+                    'is_showing' => $request->boolean('is_showing'),
+                    'description' => $validated['description'],
+                    'genre_id' => $genre->id,
+                ]);
             });
 
-            return redirect('/admin/movies')->with('success', '映画が正常に更新されました。');
+            return redirect('/admin/movies');
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', '映画の更新に失敗しました。: ' . $e->getMessage());
+            throw $e; // 500エラー
         }
     }
 
@@ -113,13 +96,13 @@ class AdminMovieController extends Controller
     {
         $id = $request->route('id');
 
-        try {
-            $movie = Movie::findOrFail($id);
-            $movie->delete();
+        $movie = Movie::findOrFail($id); // 存在しない場合は自動で404
 
-            return redirect('/admin/movies')->with('success', '映画が正常に削除されました。');
+        try {
+            $movie->delete();
+            return redirect('/admin/movies');
         } catch (\Exception $e) {
-            return redirect('/admin/movies')->with('error', '映画の削除に失敗しました。');
+            throw $e; // 500エラー
         }
     }
 }
