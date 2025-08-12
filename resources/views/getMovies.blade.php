@@ -9,6 +9,14 @@
 </head>
 
 <body>
+    <form method="GET" action="{{ route('movies.index') }}">
+        <input type="text" name="keyword" value="{{ request('keyword') }}" placeholder="キーワードを入力">
+        <input type="radio" name="is_showing" value="all" {{ request('is_showing', 'all') === 'all' ? 'checked' : '' }}> すべて
+        <input type="radio" name="is_showing" value="0" {{ request('is_showing') === '0' ? 'checked' : '' }}> 公開予定
+        <input type="radio" name="is_showing" value="1" {{ request('is_showing') === '1' ? 'checked' : '' }}> 公開中
+
+        <button type="submit" class="search-button">検索</button>
+    </form>
     <ul>
         @foreach ($movies as $movie)
         <li>タイトル: {{ $movie->title }}</li>
@@ -20,6 +28,7 @@
         <li>更新日時: {{ $movie->updated_at }}</li>
         @endforeach
     </ul>
+    {{ $movies->appends(request()->query())->links() }}
 </body>
 
 </html>
