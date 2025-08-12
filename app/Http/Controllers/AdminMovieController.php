@@ -18,7 +18,7 @@ class AdminMovieController extends Controller
 
     public function AdminMoviesCreate()
     {
-        $genres = Genre::orderBy('genre_name')->get();
+        $genres = Genre::orderBy('name')->get();
         return view('admin.movies.create', compact('genres'));
     }
 
@@ -30,14 +30,14 @@ class AdminMovieController extends Controller
             'published_year' => 'required',
             'is_showing' => 'boolean',
             'description' => 'required',
-            'genre_name' => 'required|string|max:255', // ジャンル必須
+            'genre' => 'required|string|max:255', // ジャンル必須
         ]);
 
         try {
             $movie = DB::transaction(function () use ($validated, $request) {
                 // ジャンルの登録
                 $genre = Genre::firstOrCreate(
-                    ['genre_name' => $validated['genre_name']]
+                    ['name' => $validated['genre']]
                 );
 
                 // 映画の作成
@@ -64,7 +64,7 @@ class AdminMovieController extends Controller
     public function AdminMoviesEdit($id)
     {
         $movie = Movie::with('genre')->findOrFail($id);
-        $genres = Genre::orderBy('genre_name')->get();
+        $genres = Genre::orderBy('name')->get();
         return view('admin.movies.edit', compact('movie', 'genres'));
     }
 
@@ -78,14 +78,14 @@ class AdminMovieController extends Controller
             'published_year' => 'required',
             'is_showing' => 'boolean',
             'description' => 'required',
-            'genre_name' => 'required|string|max:255',
+            'genre' => 'required|string|max:255',
         ]);
 
         try {
             $updatedMovie = DB::transaction(function () use ($validated, $request, $movie) {
                 // ジャンルの取得または新規作成
                 $genre = Genre::firstOrCreate(
-                    ['genre_name' => $validated['genre_name']]
+                    ['name' => $validated['genre']]
                 );
 
                 // 映画の更新

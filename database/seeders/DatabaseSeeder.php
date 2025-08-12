@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($genreNames as $genreName) {
-            Genre::firstOrCreate(['genre_name' => $genreName]);
+            Genre::firstOrCreate(['name' => $genreName]);
         }
 
         // 作成されたジャンルのIDを取得

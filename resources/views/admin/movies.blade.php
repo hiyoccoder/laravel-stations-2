@@ -28,7 +28,7 @@
                 <td>{{ $movie->published_year }}</td>
                 <td>{{ $movie->is_showing_text }}</td>
                 <td>{{ $movie->description }}</td>
-                <td>{{ $movie->genre->genre_name }}</td>
+                <td>{{ $movie->genre->name }}</td>
                 <td>{{ $movie->created_at }}</td>
                 <td>{{ $movie->updated_at }}</td>
                 <td>

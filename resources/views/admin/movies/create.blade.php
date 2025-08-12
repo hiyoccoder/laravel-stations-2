@@ -44,8 +44,8 @@
         </div>
 
         <div>
-            <label for="genre_name">ジャンル:</label>
-            <input type="text" id="genre_name" name="genre_name" value="{{ old('genre_name') }}" />
+            <label for="name">ジャンル:</label>
+            <input type="text" id="name" name="genre" value="{{ old('name') }}" />
         </div>
 
         <div class="button">
