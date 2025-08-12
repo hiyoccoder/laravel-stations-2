@@ -43,6 +43,11 @@
             <textarea id="description" name="description" rows="5" cols="33">{{ old('description') }}</textarea>
         </div>
 
+        <div>
+            <label for="genre_name">ジャンル:</label>
+            <input type="text" id="genre_name" name="genre_name" value="{{ old('genre_name') }}" />
+        </div>
+
         <div class="button">
             <button type="submit">送信</button>
         </div>

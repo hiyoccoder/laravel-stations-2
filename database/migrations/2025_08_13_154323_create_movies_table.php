@@ -18,6 +18,10 @@ return new class extends Migration
             $table->integer('published_year');
             $table->tinyInteger('is_showing')->default(0);
             $table->text('description');
+            $table->foreignId('genre_id')
+                ->constrained('genres')
+                ->onUpdate('cascade')    // ジャンルIDが変わったら映画も追従
+                ->onDelete('restrict'); // ジャンルが使用中なら削除できない
             $table->timestamps();
         });
     }

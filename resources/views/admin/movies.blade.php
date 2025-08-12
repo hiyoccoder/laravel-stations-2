@@ -17,6 +17,7 @@
                 <th>公開年</th>
                 <th>上映中かどうか</th>
                 <th>概要</th>
+                <th>ジャンル</th>
                 <th>登録日時</th>
                 <th>更新日時</th>
             </tr>
@@ -27,6 +28,7 @@
                 <td>{{ $movie->published_year }}</td>
                 <td>{{ $movie->is_showing_text }}</td>
                 <td>{{ $movie->description }}</td>
+                <td>{{ $movie->genre->genre_name }}</td>
                 <td>{{ $movie->created_at }}</td>
                 <td>{{ $movie->updated_at }}</td>
                 <td>
