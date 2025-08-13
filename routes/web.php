@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\AdminMovieController;
+use App\Http\Controllers\SheetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,4 @@ Route::post('/admin/movies/store', [AdminMovieController::class, 'AdminMoviesSto
 Route::get('/admin/movies/{id}/edit', [AdminMovieController::class, 'AdminMoviesEdit'])->name('admin.movies.edit');
 Route::patch('/admin/movies/{id}/update', [AdminMovieController::class, 'AdminMoviesUpdate'])->name('admin.movies.update');
 Route::delete('/admin/movies/{id}/destroy', [AdminMovieController::class, 'AdminMoviesDestroy'])->name('admin.movies.destroy');
+Route::get('/sheets', [SheetController::class, 'getSheets'])->name('sheets.index');

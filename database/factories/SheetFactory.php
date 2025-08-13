@@ -14,7 +14,8 @@ class SheetFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'column' => $this->faker->numberBetween(1, 10),
+            'row' => $this->faker->randomElement(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']),
         ];
     }
 }
