@@ -16,4 +16,14 @@ class Schedule extends Model
         'start_time',
         'end_time',
     ];
+
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
+    public function movie()
+    {
+        return $this->belongsTo(Movie::class);
+    }
 }

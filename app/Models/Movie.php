@@ -23,6 +23,11 @@ class Movie extends Model
         'genre_id',
     ];
 
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
     public function genre()
     {
         return $this->belongsTo(Genre::class);
