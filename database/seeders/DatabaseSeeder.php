@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Movie;
 use App\Models\Genre;
+use App\Models\Schedule; // ←追加
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -34,10 +35,17 @@ class DatabaseSeeder extends Seeder
         $genreIds = Genre::pluck('id')->toArray();
 
         // MovieFactoryを修正して既存ジャンルを使用
-        Movie::factory(10)->make()->each(function ($movie) use ($genreIds) {
+        $movies = Movie::factory(10)->make()->each(function ($movie) use ($genreIds) {
             $movie->genre_id = fake()->randomElement($genreIds);
             $movie->save();
         });
+
+        // 各映画に対してスケジュールを作成 ←追加
+        foreach ($movies as $movie) {
+            Schedule::factory()->count(fake()->numberBetween(2, 5))->create([
+                'movie_id' => $movie->id
+            ]);
+        }
 
         // sheetsテーブルのマスターデータ投入
         DB::table('sheets')->truncate();
