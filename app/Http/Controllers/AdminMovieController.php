@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Movie;
 use App\Models\Genre;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -104,5 +105,22 @@ class AdminMovieController extends Controller
         } catch (\Exception $e) {
             throw $e; // 500エラー
         }
+    }
+
+    public function AdminSchedules(Request $request)
+    {
+        $movies = Movie::with('schedules')->get();
+        return view('admin.schedules', compact('movies'));
+    }
+
+    public function getAdminMoviesDetail($id)
+    {
+        $movie = Movie::findOrFail($id);
+
+        // その映画の上映スケジュールを取得（アソシエーション使わない）
+        $schedules = Schedule::where('movie_id', $id)
+            ->orderBy('start_time', 'asc') // 上映開始時刻の昇順
+            ->get();
+        return view('admin.movies.getAdminMoviesDetail', compact('movie', 'schedules'));
     }
 }
