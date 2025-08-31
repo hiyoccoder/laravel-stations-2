@@ -19,6 +19,7 @@
             <tr>
                 <th>上映開始時刻</th>
                 <th>上映終了時刻</th>
+                <th>スケジュール詳細</th>
             </tr>
         </thead>
         <tbody>
@@ -27,16 +28,23 @@
             <tr>
                 <td>{{ $schedule->start_time }}</td>
                 <td>{{ $schedule->end_time }}</td>
+                <td>
+                    <a href="{{ route('admin.schedules.detail', $schedule) }}">
+                        <button>リンク</button>
+                    </a>
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-    <a href="{{ route('admin.movies.detail', $movie) }}">
-        <button>リンク</button>
-    </a>
     @else
     <p>スケジュールがありません</p>
     @endif
+    <div>
+        <a href="{{ route('admin.schedules.create', ['id' => $movie->id]) }}">
+            <button>スケジュール作成</button>
+        </a>
+    </div>
     @endforeach
 </body>
 

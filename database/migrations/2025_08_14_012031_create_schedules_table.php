@@ -22,11 +22,11 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->comment('列');
 
-            // start_time - time
-            $table->time('start_time')->comment('上映開始時刻');
+            // start_time - datetime
+            $table->datetime('start_time')->comment('上映開始時刻');
 
-            // end_time - time
-            $table->time('end_time')->comment('上映終了時刻');
+            // end_time - datetime
+            $table->datetime('end_time')->comment('上映終了時刻');
 
             // created_at, updated_at - datetime
             $table->timestamps();

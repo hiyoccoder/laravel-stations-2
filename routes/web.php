@@ -24,4 +24,10 @@ Route::delete('/admin/movies/{id}/destroy', [AdminMovieController::class, 'Admin
 Route::get('/admin/movies/{id}', [AdminMovieController::class, 'getAdminMoviesDetail'])->name('admin.movies.detail');
 
 Route::get('/admin/schedules', [AdminMovieController::class, 'AdminSchedules'])->name('admin.schedules');
+Route::get('/admin/movies/{id}/schedules/create', [AdminMovieController::class, 'AdminSchedulesCreate'])->name('admin.schedules.create');
+Route::post('/admin/movies/{id}/schedules/store', [AdminMovieController::class, 'AdminSchedulesStore'])->name('admin.schedules.store');
+Route::get('/admin/schedules/{scheduleId}/edit', [AdminMovieController::class, 'AdminSchedulesEdit'])->name('admin.schedules.edit');
+Route::patch('/admin/schedules/{id}/update', [AdminMovieController::class, 'AdminSchedulesUpdate'])->name('admin.schedules.update');
+Route::delete('/admin/schedules/{scheduleId}/destroy', [AdminMovieController::class, 'AdminSchedulesDestroy'])->name('admin.schedules.destroy');
+Route::get('/admin/schedules/{id}', [AdminMovieController::class, 'getAdminSchedulesDetail'])->name('admin.schedules.detail');
 Route::get('/sheets', [SheetController::class, 'getSheets'])->name('sheets.index');
