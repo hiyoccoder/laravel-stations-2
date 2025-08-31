@@ -10,8 +10,13 @@
 
 <body>
     @if ($errors->any())
-    <div style="color: red;">
-        エラーが出ています
+    <div class="error-summary">
+        <strong>以下のエラーを修正してください：</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
     @endif
 

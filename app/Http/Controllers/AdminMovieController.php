@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Movie;
 use App\Models\Genre;
 use App\Models\Schedule;
+use App\Http\Requests\CreateScheduleRequest;
+use App\Http\Requests\UpdateScheduleRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class AdminMovieController extends Controller
@@ -133,15 +136,9 @@ class AdminMovieController extends Controller
         return view('admin.schedules.create', compact('schedule', 'movie'));
     }
 
-    public function AdminSchedulesStore(Request $request, $id)
+    public function AdminSchedulesStore(CreateScheduleRequest $request, $id)
     {
-        $validated = $request->validate([
-            'movie_id' => 'required|exists:movies,id',
-            'start_time_date' => 'required|date_format:Y-m-d',    // ← 厳密なフォーマット指定
-            'start_time_time' => 'required|date_format:H:i',
-            'end_time_date' => 'required|date_format:Y-m-d',      // ← 厳密なフォーマット指定
-            'end_time_time' => 'required|date_format:H:i',
-        ]);
+        $validated = $request->validated();
 
         try {
             DB::transaction(function () use ($validated) {
@@ -158,13 +155,15 @@ class AdminMovieController extends Controller
 
                 Schedule::create([
                     'movie_id' => $validated['movie_id'],
-                    'start_time' => $newStartTime,
-                    'end_time' => $newEndTime,
+                    'start_time' => $newStartTime->format('Y-m-d H:i:s'),
+                    'end_time' => $newEndTime->format('Y-m-d H:i:s'),
                 ]);
             });
-            return redirect('/admin/schedules');
+
+            return redirect('/admin/schedules')->with('success', 'スケジュールが正常に作成されました。');
         } catch (\Exception $e) {
-            throw $e; // 500エラー
+            return back()->withErrors(['error' => 'スケジュールの作成中にエラーが発生しました。'])
+                ->withInput();
         }
     }
 
@@ -181,17 +180,10 @@ class AdminMovieController extends Controller
         return view('admin.schedules.edit', compact('schedule'));
     }
 
-    public function AdminSchedulesUpdate(Request $request, $id)
+    public function AdminSchedulesUpdate(UpdateScheduleRequest $request, $id)
     {
         $schedule = Schedule::findOrFail($id);
-
-        $validated = $request->validate([
-            'movie_id' => 'required|exists:movies,id',  // ← 追加
-            'start_time_date' => 'required|date_format:Y-m-d',    // ← 厳密なフォーマット指定
-            'start_time_time' => 'required|date_format:H:i',
-            'end_time_date' => 'required|date_format:Y-m-d',      // ← 厳密なフォーマット指定
-            'end_time_time' => 'required|date_format:H:i',
-        ]);
+        $validated = $request->validated();
 
         try {
             DB::transaction(function () use ($validated, $schedule) {
@@ -213,9 +205,10 @@ class AdminMovieController extends Controller
                 ]);
             });
 
-            return redirect('/admin/schedules');
+            return redirect('/admin/schedules')->with('success', 'スケジュールが正常に更新されました。');
         } catch (\Exception $e) {
-            throw $e; // 500エラー
+            return back()->withErrors(['error' => 'スケジュールの更新中にエラーが発生しました。'])
+                ->withInput();
         }
     }
 
