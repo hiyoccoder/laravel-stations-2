@@ -13,4 +13,13 @@ class Sheet extends Model
         'column',
         'row',
     ];
+    public function schedules()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
+
+    public function movie()
+    {
+        return $this->belongsTo(Movie::class);
+    }
 }
