@@ -48,7 +48,9 @@ class DatabaseSeeder extends Seeder
         }
 
         // sheetsテーブルのマスターデータ投入
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('sheets')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('sheets')->insert([
             ['id' => 1, 'column' => 1, 'row' => 'a'],
             ['id' => 2, 'column' => 2, 'row' => 'a'],

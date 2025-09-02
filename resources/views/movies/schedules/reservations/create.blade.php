@@ -25,13 +25,13 @@
     <form action="{{ route('reservations.store') }}" method="post">
         @csrf
         <div>
-            <label for="reservations_name">予約者氏名:</label>
-            <input type="text" id="reservations_name" name="reservations_name" value="{{ old('reservations_name') }}" />
+            <label for="name">予約者氏名:</label>
+            <input type="text" id="name" name="name" value="{{ old('name') }}" />
         </div>
 
         <div>
-            <label for="reservations_mail">予約者メールアドレス:</label>
-            <input type="url" id="reservations_mail" name="reservations_mail" value="{{ old('reservations_mail') }}" />
+            <label for="email">予約者メールアドレス:</label>
+            <input type="email" id="email" name="email" value="{{ old('email') }}" />
         </div>
 
         <div class="button">

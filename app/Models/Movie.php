@@ -32,4 +32,18 @@ class Movie extends Model
     {
         return $this->belongsTo(Genre::class);
     }
+
+    public static function insertGetId(array $values, $sequence = null)
+    {
+        // タイトルで既存のMovieを確認し、存在する場合はそのIDを返す
+        if (isset($values['title'])) {
+            $existing = static::where('title', $values['title'])->first();
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+        
+        // 存在しない場合は通常通り挿入
+        return \Illuminate\Support\Facades\DB::table((new static)->getTable())->insertGetId($values, $sequence);
+    }
 }
