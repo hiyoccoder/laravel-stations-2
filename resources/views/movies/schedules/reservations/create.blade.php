@@ -18,12 +18,21 @@
 
     @if ($errors->any())
     <div style="color: red;">
-        エラーが出ています
+        <strong>エラーが出ています:</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
     @endif
 
     <form action="{{ route('reservations.store') }}" method="post">
         @csrf
+        <input type="hidden" name="schedule_id" value="{{ $schedule->id }}" />
+        <input type="hidden" name="sheet_id" value="{{ request('sheetId') }}" />
+        <input type="hidden" name="date" value="{{ request('date') }}" />
+
         <div>
             <label for="name">予約者氏名:</label>
             <input type="text" id="name" name="name" value="{{ old('name') }}" />

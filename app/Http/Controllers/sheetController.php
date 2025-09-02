@@ -39,7 +39,6 @@ class SheetController extends Controller
     public function ReservationsStore(CreateReservationRequest $request)
     {
         $validated = $request->validated();
-        dd($validated);
 
         try {
             Reservation::create([
