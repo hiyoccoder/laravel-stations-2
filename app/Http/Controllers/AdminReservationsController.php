@@ -8,6 +8,7 @@ use App\Models\Movie;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Http\Requests\CreateReservationRequest;
+use Illuminate\Support\Facades\DB;
 
 class AdminReservationsController extends Controller
 {
@@ -22,30 +23,15 @@ class AdminReservationsController extends Controller
         return view('admin.reservations.index', compact('reservations'));
     }
 
-    public function detail(Request $request, $movie_id, $schedule_id)
+    public function create(Request $request)
     {
-        if (!$request->has('date')) {
-            abort(400, 'date is required');
-        }
-        $sheets = Sheet::all();
-        $movie = Movie::findOrFail($movie_id);
-        $schedule = Schedule::findOrFail($schedule_id);
-
-        $reservations = Reservation::where('schedule_id', $schedule_id)
-            ->where('date', $request->input('date'))
-            ->get();
-        return view('movies.schedules.sheets', compact('sheets', 'movie', 'schedule', 'reservations'));
-    }
-
-    public function create(Request $request, $movie_id, $schedule_id)
-    {
-        if (!$request->has('date') || !$request->has('sheetId')) {
+        if (!$request->has('date') || !$request->has('sheetId') || !$request->has('movieId') || !$request->has('scheduleId')) {
             abort(400, 'date is required');
         }
 
         // 既に予約が存在するかチェック  
         $requestDate = \Carbon\Carbon::parse($request->input('date'))->format('Y-m-d');
-        $existingReservation = Reservation::where('schedule_id', $schedule_id)
+        $existingReservation = Reservation::where('schedule_id', $request->input('scheduleId'))
             ->where('sheet_id', $request->input('sheetId'))
             ->whereDate('date', $requestDate)
             ->first();
@@ -55,9 +41,9 @@ class AdminReservationsController extends Controller
         }
 
         $sheets = Sheet::all();
-        $movie = Movie::findOrFail($movie_id);
-        $schedule = Schedule::findOrFail($schedule_id);
-        return view('movies.schedules.reservations.create', compact('sheets', 'movie', 'schedule'));
+        $movie = Movie::findOrFail($request->input('movieId'));
+        $schedule = Schedule::findOrFail($request->input('scheduleId'));
+        return view('admin.reservations.create', compact('sheets', 'movie', 'schedule'));
     }
 
     public function store(CreateReservationRequest $request)
@@ -74,7 +60,7 @@ class AdminReservationsController extends Controller
             $schedule = Schedule::find($validated['schedule_id']);
             $movie = Movie::find($schedule->movie_id);
 
-            return redirect("/movies/{$movie->id}/schedules/{$validated['schedule_id']}/sheets?date={$validated['date']}")
+            return redirect("/admin/reservations/")
                 ->with('error', 'その座席はすでに予約済みです');
         }
 
@@ -98,48 +84,55 @@ class AdminReservationsController extends Controller
         }
     }
 
+    public function edit($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+        return view('admin.reservations.edit', compact('reservation'));
+    }
+
     public function update(Request $request, $id)
     {
-        $movie = Movie::findOrFail($id);
+        $reservation = Reservation::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'required|unique:movies,title,' . $id,
-            'image_url' => 'required|url',
-            'published_year' => 'required',
-            'is_showing' => 'boolean',
-            'description' => 'required',
-            'genre' => 'required|string|max:255',
+            'schedule_id' => ['required'],
+            'sheet_id' => ['required'],
+            'name' => ['required'],
+            'email' => ['required', 'email'],
+            'date' => ['required', 'date_format:Y-m-d']
         ]);
 
         try {
-            DB::transaction(function () use ($validated, $request, $movie) {
-                $genre = Genre::firstOrCreate(['name' => $validated['genre']]);
+            DB::transaction(function () use ($validated, $reservation) {
+                // 重複チェック
+                $duplicateReservation = Reservation::where('schedule_id', $validated['schedule_id'])
+                    ->where('sheet_id', $validated['sheet_id'])
+                    ->whereDate('date', $validated['date'])
+                    ->where('id', '!=', $reservation->id)
+                    ->where('is_canceled', false)
+                    ->first();
 
-                $movie->update([
-                    'title' => $validated['title'],
-                    'image_url' => $validated['image_url'],
-                    'published_year' => $validated['published_year'],
-                    'is_showing' => $request->boolean('is_showing'),
-                    'description' => $validated['description'],
-                    'genre_id' => $genre->id,
-                ]);
+                if ($duplicateReservation) {
+                    throw new \Exception('指定された座席は既に予約されています。');
+                }
+
+                $reservation->update($validated);
             });
-
-            return redirect('/admin/movies');
+            return redirect('/admin/reservations/');
         } catch (\Exception $e) {
-            throw $e; // 500エラー
+            return redirect('/admin/reservations/')->withErrors(['error' => $e->getMessage()]);
         }
     }
 
-    public function destory(Request $request)
+    public function destroy(Request $request, $id)
     {
         $id = $request->route('id');
 
-        $movie = Movie::findOrFail($id); // 存在しない場合は自動で404
+        $reservation = Reservation::findOrFail($id); // 存在しない場合は自動で404
 
         try {
-            $movie->delete();
-            return redirect('/admin/movies');
+            $reservation->delete();
+            return redirect('/admin/reservations');
         } catch (\Exception $e) {
             throw $e; // 500エラー
         }

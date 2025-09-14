@@ -9,43 +9,39 @@
 </head>
 
 <body>
+    <div class="reservation-info">
+        <p><strong>映画:</strong> {{ $movie->title }}</p>
+        <p><strong>上映スケジュール:</strong> {{ $schedule->start_time }} - {{ $schedule->end_time }}</p>
+        <p><strong>座席番号:</strong> {{ request('sheetId') }}</p>
+        <p><strong>日付:</strong> {{ request('date') }}</p>
+    </div>
+
     @if ($errors->any())
     <div style="color: red;">
-        エラーが出ています
+        <strong>エラーが出ています:</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
     @endif
 
-    <form action="{{ route('admin.movies.store') }}" method="post">
+    <form action="{{ route('reservations.store') }}" method="post">
         @csrf
+        <input type="hidden" name="movie_id" value="{{ $movie->id }}" />
+        <input type="hidden" name="schedule_id" value="{{ $schedule->id }}" />
+        <input type="hidden" name="sheet_id" value="{{ request('sheetId') ?: '1' }}" />
+        <input type="hidden" name="date" value="{{ request('date') ?: now()->format('Y-m-d') }}" />
+
         <div>
-            <label for="title">映画タイトル:</label>
-            <input type="text" id="title" name="title" value="{{ old('title') }}" />
+            <label for="name">予約者氏名:</label>
+            <input type="text" id="name" name="name" value="{{ old('name') }}" />
         </div>
 
         <div>
-            <label for="image_url">画像URL:</label>
-            <input type="url" id="image_url" name="image_url" value="{{ old('image_url') }}" />
-        </div>
-
-        <div>
-            <label for="published_year">公開年:</label>
-            <input type="number" id="published_year" name="published_year" value="{{ old('published_year') }}" />
-        </div>
-
-        <div>
-            <label for="is_showing">上映中かどうか:</label>
-            <input type="checkbox" id="is_showing" name="is_showing" value="1"
-                {{ old('is_showing') ? 'checked' : '' }} />
-        </div>
-
-        <div>
-            <label for="description">概要:</label>
-            <textarea id="description" name="description" rows="5" cols="33">{{ old('description') }}</textarea>
-        </div>
-
-        <div>
-            <label for="name">ジャンル:</label>
-            <input type="text" id="name" name="genre" value="{{ old('name') }}" />
+            <label for="email">予約者メールアドレス:</label>
+            <input type="email" id="email" name="email" value="{{ old('email') }}" />
         </div>
 
         <div class="button">
