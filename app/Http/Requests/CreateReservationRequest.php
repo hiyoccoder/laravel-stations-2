@@ -24,10 +24,11 @@ class CreateReservationRequest extends FormRequest
     public function rules()
     {
         return [
+            'movie_id' => ['required'],
             'schedule_id' => ['required'],
             'sheet_id' => ['required'],
             'name' => ['required'],
-            'email' => ['required', 'email:strict,dns'],
+            'email' => ['required', 'email'],
             'date' => ['required', 'date_format:Y-m-d']
         ];
     }

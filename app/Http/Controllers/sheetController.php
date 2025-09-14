@@ -16,6 +16,7 @@ class SheetController extends Controller
         $sheets = Sheet::all();
         return view('getSheets', ['sheets' => $sheets]);
     }
+
     public function moviesSchedulesSheets(Request $request, $movie_id, $schedule_id)
     {
         if (!$request->has('date')) {
@@ -26,6 +27,7 @@ class SheetController extends Controller
         $schedule = Schedule::findOrFail($schedule_id);
         return view('movies.schedules.sheets', compact('sheets', 'movie', 'schedule'));
     }
+
     public function moviesSchedulesReservationsCreate(Request $request, $movie_id, $schedule_id)
     {
         if (!$request->has('date') || !$request->has('sheetId')) {
@@ -36,12 +38,27 @@ class SheetController extends Controller
         $schedule = Schedule::findOrFail($schedule_id);
         return view('movies.schedules.reservations.create', compact('sheets', 'movie', 'schedule'));
     }
+
     public function ReservationsStore(CreateReservationRequest $request)
     {
         $validated = $request->validated();
 
+        // 重複予約チェック（アプリケーションレベル）
+        $existingReservation = Reservation::where('schedule_id', $validated['schedule_id'])
+            ->where('sheet_id', $validated['sheet_id'])
+            ->first();
+
+        if ($existingReservation) {
+            $schedule = Schedule::find($validated['schedule_id']);
+            $movie = Movie::find($schedule->movie_id);
+
+            return redirect("/movies/{$movie->id}/schedules/{$validated['schedule_id']}/sheets?date={$validated['date']}")
+                ->withErrors(['seat' => 'その座席はすでに予約済みです']);
+        }
+
         try {
             Reservation::create([
+                'movie_id' => $validated['movie_id'],
                 'schedule_id' => $validated['schedule_id'],
                 'sheet_id' => $validated['sheet_id'],
                 'name' => $validated['name'],
@@ -49,7 +66,11 @@ class SheetController extends Controller
                 'date' => $validated['date'],
             ]);
 
-            return redirect('/movies')->with('success', 'スケジュールが正常に作成されました。');
+            $schedule = Schedule::find($validated['schedule_id']);
+            $movie = Movie::find($schedule->movie_id);
+
+            return redirect("/movies/{$movie->id}")
+                ->with('success', '予約が完了しました');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'スケジュールの作成中にエラーが発生しました。'])
                 ->withInput();

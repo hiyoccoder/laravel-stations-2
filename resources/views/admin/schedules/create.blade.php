@@ -22,6 +22,7 @@
 
     <form action="{{ route('admin.schedules.store', ['id' => $movie->id]) }}" method="post">
         @csrf
+        <input type="hidden" name="movie_id" value="{{ $movie->id }}">
         <div>
             <label for="start_time_date">開始日付</label>
             <input type="date" id="start_time_date" name="start_time_date" value="{{ old('start_time_date') }}" />

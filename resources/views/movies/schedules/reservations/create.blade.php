@@ -10,10 +10,10 @@
 
 <body>
     <div class="reservation-info">
-        <p><strong>映画:</strong> {{ $movie->movie_id }}</p>
-        <p><strong>上映スケジュール:</strong> {{ $schedule->schedule_id }}</p>
-        <p><strong>座席番号:</strong> {{ $sheets }}</p>
-        <p><strong>日付:</strong></p>
+        <p><strong>映画:</strong> {{ $movie->title }}</p>
+        <p><strong>上映スケジュール:</strong> {{ $schedule->start_time }} - {{ $schedule->end_time }}</p>
+        <p><strong>座席番号:</strong> {{ request('sheetId') }}</p>
+        <p><strong>日付:</strong> {{ request('date') }}</p>
     </div>
 
     @if ($errors->any())
@@ -29,9 +29,10 @@
 
     <form action="{{ route('reservations.store') }}" method="post">
         @csrf
+        <input type="hidden" name="movie_id" value="{{ $movie->id }}" />
         <input type="hidden" name="schedule_id" value="{{ $schedule->id }}" />
-        <input type="hidden" name="sheet_id" value="{{ request('sheetId') }}" />
-        <input type="hidden" name="date" value="{{ request('date') }}" />
+        <input type="hidden" name="sheet_id" value="{{ request('sheetId') ?: '1' }}" />
+        <input type="hidden" name="date" value="{{ request('date') ?: now()->format('Y-m-d') }}" />
 
         <div>
             <label for="name">予約者氏名:</label>

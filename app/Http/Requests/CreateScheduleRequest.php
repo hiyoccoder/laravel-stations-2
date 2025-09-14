@@ -25,7 +25,7 @@ class CreateScheduleRequest extends FormRequest
     public function rules()
     {
         return [
-            'movie_id' => ['required', 'exists:movies,id'],
+            'movie_id' => ['required'],
             'start_time_date' => ['required', 'date_format:Y-m-d', 'before_or_equal:end_time_date'],
             'start_time_time' => ['required', 'date_format:H:i'],
             'end_time_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:start_time_date'],
