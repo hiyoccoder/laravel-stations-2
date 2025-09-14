@@ -58,7 +58,6 @@ class SheetController extends Controller
 
         try {
             Reservation::create([
-                'movie_id' => $validated['movie_id'],
                 'schedule_id' => $validated['schedule_id'],
                 'sheet_id' => $validated['sheet_id'],
                 'name' => $validated['name'],
@@ -72,7 +71,7 @@ class SheetController extends Controller
             return redirect("/movies/{$movie->id}")
                 ->with('success', '予約が完了しました');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'スケジュールの作成中にエラーが発生しました。'])
+            return back()->withErrors(['error' => 'An error occurred while creating the reservation.'])
                 ->withInput();
         }
     }
