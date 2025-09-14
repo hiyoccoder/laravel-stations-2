@@ -25,7 +25,11 @@ class SheetController extends Controller
         $sheets = Sheet::all();
         $movie = Movie::findOrFail($movie_id);
         $schedule = Schedule::findOrFail($schedule_id);
-        return view('movies.schedules.sheets', compact('sheets', 'movie', 'schedule'));
+
+        $reservations = Reservation::where('schedule_id', $schedule_id)
+            ->where('date', $request->input('date'))
+            ->get();
+        return view('movies.schedules.sheets', compact('sheets', 'movie', 'schedule', 'reservations'));
     }
 
     public function moviesSchedulesReservationsCreate(Request $request, $movie_id, $schedule_id)
@@ -33,6 +37,18 @@ class SheetController extends Controller
         if (!$request->has('date') || !$request->has('sheetId')) {
             abort(400, 'date is required');
         }
+
+        // 既に予約が存在するかチェック  
+        $requestDate = \Carbon\Carbon::parse($request->input('date'))->format('Y-m-d');
+        $existingReservation = Reservation::where('schedule_id', $schedule_id)
+            ->where('sheet_id', $request->input('sheetId'))
+            ->whereDate('date', $requestDate)
+            ->first();
+
+        if ($existingReservation) {
+            abort(400, 'この座席は既に予約済みです');
+        }
+
         $sheets = Sheet::all();
         $movie = Movie::findOrFail($movie_id);
         $schedule = Schedule::findOrFail($schedule_id);

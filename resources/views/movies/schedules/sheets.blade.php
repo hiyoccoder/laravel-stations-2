@@ -17,10 +17,13 @@
 
     <div>..スクリーン..</div>
 
+
+
     <table border="1">
         @php
         // データを行ごとにグループ化
         $groupedSheets = $sheets->groupBy('row');
+        $reservedSheetIds = $reservations->pluck('sheet_id')->toArray();
         @endphp
 
         @foreach(['a', 'b', 'c'] as $row)
@@ -28,9 +31,23 @@
             @if(isset($groupedSheets[$row]))
             @foreach($groupedSheets[$row]->sortBy('column') as $sheet)
             <td>
-                <a href="{{ route('movies.schedules.reservations.create',[$movie->id, $schedule->id,'date' => now()->format('Y-m-d'),'sheetId' => $sheet->id]) }}">
-                    {{ $sheet->row }}-{{ $sheet->column }}
+                @if(in_array($sheet->id, $reservedSheetIds))
+                {{-- 予約済みの場合 --}}
+                <div class="seat-reserved" style="background: gray;">
+                    {{ strtoupper($sheet->row) }}-{{ $sheet->column }}<br>
+                    <small>予約済み</small>
+                </div>
+                @else
+                {{-- 空席の場合：リンクを表示 --}}
+                <a href="{{ route('movies.schedules.reservations.create', [
+                    $movie->id, 
+                    $schedule->id,
+                    'date' => now()->format('Y-m-d'),
+                    'sheetId' => $sheet->id
+                ]) }}" class="seat-available">
+                    {{ strtoupper($sheet->row) }}-{{ $sheet->column }}
                 </a>
+                @endif
             </td>
             @endforeach
             @endif
