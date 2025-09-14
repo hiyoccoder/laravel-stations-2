@@ -46,6 +46,7 @@ class SheetController extends Controller
         // 重複予約チェック（アプリケーションレベル）
         $existingReservation = Reservation::where('schedule_id', $validated['schedule_id'])
             ->where('sheet_id', $validated['sheet_id'])
+            ->where('date', $validated['date'])
             ->first();
 
         if ($existingReservation) {

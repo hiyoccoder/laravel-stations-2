@@ -9,6 +9,18 @@
 </head>
 
 <body>
+    @if(session('success'))
+        <div style="background-color: #d4edda; color: #155724; padding: 10px; margin: 10px 0; border: 1px solid #c3e6cb; border-radius: 4px;">
+            {{ session('success') }}
+        </div>
+    @endif
+    
+    @if(session('error'))
+        <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb; border-radius: 4px;">
+            {{ session('error') }}
+        </div>
+    @endif
+    
     <ul>
         <li>タイトル: {{ $movie->title }}</li>
         <li>

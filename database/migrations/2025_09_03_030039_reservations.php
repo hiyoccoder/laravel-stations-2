@@ -40,8 +40,8 @@ return new class extends Migration
             // 作成日時・更新日時 (datetime)
             $table->timestamps(); // 作成日時・更新日時
 
-            // schedule_id, sheet_idの複合ユニーク制約
-            $table->unique(['schedule_id', 'sheet_id'], 'unique_schedule_sheet');
+            // schedule_id, sheet_id, dateの複合ユニーク制約
+            $table->unique(['schedule_id', 'sheet_id', 'date'], 'unique_schedule_sheet_date');
         });
     }
 
