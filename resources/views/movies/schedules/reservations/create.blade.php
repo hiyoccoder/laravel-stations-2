@@ -14,6 +14,8 @@
         <p><strong>上映スケジュール:</strong> {{ $schedule->start_time }} - {{ $schedule->end_time }}</p>
         <p><strong>座席番号:</strong> {{ request('sheetId') }}</p>
         <p><strong>日付:</strong> {{ request('date') }}</p>
+        <p><strong>予約者名:</strong> {{ auth()->user()->name }}</p>
+        <p><strong>メールアドレス:</strong> {{ auth()->user()->email }}</p>
     </div>
 
     @if ($errors->any())
@@ -34,15 +36,6 @@
         <input type="hidden" name="sheet_id" value="{{ request('sheetId') ?: '1' }}" />
         <input type="hidden" name="date" value="{{ request('date') ?: now()->format('Y-m-d') }}" />
 
-        <div>
-            <label for="name">予約者氏名:</label>
-            <input type="text" id="name" name="name" value="{{ old('name') }}" />
-        </div>
-
-        <div>
-            <label for="email">予約者メールアドレス:</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" />
-        </div>
 
         <div class="button">
             <button type="submit">送信</button>

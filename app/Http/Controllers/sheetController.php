@@ -34,11 +34,16 @@ class SheetController extends Controller
 
     public function moviesSchedulesReservationsCreate(Request $request, $movie_id, $schedule_id)
     {
+        // ログインチェック
+        if (!auth()->check()) {
+            return redirect('/users/create')->with('error', 'ログインが必要です。');
+        }
+
         if (!$request->has('date') || !$request->has('sheetId')) {
             abort(400, 'date is required');
         }
 
-        // 既に予約が存在するかチェック  
+        // 既に予約が存在するかチェック
         $requestDate = \Carbon\Carbon::parse($request->input('date'))->format('Y-m-d');
         $existingReservation = Reservation::where('schedule_id', $schedule_id)
             ->where('sheet_id', $request->input('sheetId'))
@@ -57,7 +62,13 @@ class SheetController extends Controller
 
     public function reservationsStore(StoreReservationRequest $request)
     {
+        // ログインチェック
+        if (!auth()->check()) {
+            return redirect('/users/create')->with('error', 'ログインが必要です。');
+        }
+
         $validated = $request->validated();
+        $user = auth()->user();
 
         // 重複予約チェック（アプリケーションレベル）
         $existingReservation = Reservation::where('schedule_id', $validated['schedule_id'])
@@ -77,8 +88,9 @@ class SheetController extends Controller
             Reservation::create([
                 'schedule_id' => $validated['schedule_id'],
                 'sheet_id' => $validated['sheet_id'],
-                'name' => $validated['name'],
-                'email' => $validated['email'],
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
                 'date' => $validated['date'],
             ]);
 

@@ -9,9 +9,12 @@ class Sheet extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'column',
         'row',
+        'screen_id',
     ];
     public function schedules()
     {

@@ -12,6 +12,7 @@ class Reservation extends Model
     protected $fillable = [
         'schedule_id',
         'sheet_id',
+        'user_id',
         'name',
         'email',
         'date',
@@ -27,5 +28,10 @@ class Reservation extends Model
     public function sheet()
     {
         return $this->belongsTo(Sheet::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
