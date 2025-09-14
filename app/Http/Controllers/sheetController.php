@@ -7,7 +7,7 @@ use App\Models\Schedule;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
-use App\Http\Requests\CreateReservationRequest;
+use App\Http\Requests\StoreReservationRequest;
 
 class SheetController extends Controller
 {
@@ -55,14 +55,9 @@ class SheetController extends Controller
         return view('movies.schedules.reservations.create', compact('sheets', 'movie', 'schedule'));
     }
 
-    public function reservationsStore(CreateReservationRequest $request)
+    public function reservationsStore(StoreReservationRequest $request)
     {
         $validated = $request->validated();
-
-        // dateがない場合は今日の日付を設定
-        if (!isset($validated['date'])) {
-            $validated['date'] = now()->format('Y-m-d');
-        }
 
         // 重複予約チェック（アプリケーションレベル）
         $existingReservation = Reservation::where('schedule_id', $validated['schedule_id'])

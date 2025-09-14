@@ -107,8 +107,13 @@ class AdminReservationsController extends Controller
             'sheet_id' => ['required'],
             'name' => ['required'],
             'email' => ['required', 'email'],
-            'date' => ['required', 'date_format:Y-m-d']
+            'date' => ['nullable', 'date_format:Y-m-d']
         ]);
+
+        // dateがない場合は今日の日付を設定
+        if (!isset($validated['date'])) {
+            $validated['date'] = now()->format('Y-m-d');
+        }
 
         try {
             DB::transaction(function () use ($validated, $reservation) {
