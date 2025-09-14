@@ -39,6 +39,6 @@ Route::post('/reservations/store', [SheetController::class, 'reservationsStore']
 Route::get('/admin/reservations', [AdminReservationsController::class, 'index'])->name('admin.reservations.index');
 Route::get('/admin/reservations/create', [AdminReservationsController::class, 'create'])->name('admin.reservations.create');
 Route::post('/admin/reservations', [AdminReservationsController::class, 'store'])->name('admin.reservations.store');
-Route::get('/admin/reservations/{id}', [AdminReservationsController::class, 'edit'])->name('admin.reservations.edit');
-Route::put('/admin/reservations/{id}', [AdminReservationsController::class, 'update'])->name('admin.reservations.update');
+Route::get('/admin/reservations/{id}/edit', [AdminReservationsController::class, 'edit'])->name('admin.reservations.edit');
+Route::patch('/admin/reservations/{id}', [AdminReservationsController::class, 'update'])->name('admin.reservations.update');
 Route::delete('/admin/reservations/{id}', [AdminReservationsController::class, 'destroy'])->name('admin.reservations.destroy');

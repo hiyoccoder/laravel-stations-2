@@ -25,24 +25,29 @@ class AdminReservationsController extends Controller
 
     public function create(Request $request)
     {
-        if (!$request->has('date') || !$request->has('sheetId') || !$request->has('movieId') || !$request->has('scheduleId')) {
-            abort(400, 'date is required');
+        // パラメータがある場合は特定の予約作成画面、ない場合は一般的な作成画面
+        if ($request->has('date') && $request->has('sheetId') && $request->has('movieId') && $request->has('scheduleId')) {
+            // 既に予約が存在するかチェック  
+            $requestDate = \Carbon\Carbon::parse($request->input('date'))->format('Y-m-d');
+            $existingReservation = Reservation::where('schedule_id', $request->input('scheduleId'))
+                ->where('sheet_id', $request->input('sheetId'))
+                ->whereDate('date', $requestDate)
+                ->first();
+
+            if ($existingReservation) {
+                abort(400, 'この座席は既に予約済みです');
+            }
+
+            $sheets = Sheet::all();
+            $movie = Movie::findOrFail($request->input('movieId'));
+            $schedule = Schedule::findOrFail($request->input('scheduleId'));
+            return view('admin.reservations.create', compact('sheets', 'movie', 'schedule'));
         }
 
-        // 既に予約が存在するかチェック  
-        $requestDate = \Carbon\Carbon::parse($request->input('date'))->format('Y-m-d');
-        $existingReservation = Reservation::where('schedule_id', $request->input('scheduleId'))
-            ->where('sheet_id', $request->input('sheetId'))
-            ->whereDate('date', $requestDate)
-            ->first();
-
-        if ($existingReservation) {
-            abort(400, 'この座席は既に予約済みです');
-        }
-
+        // パラメータなしの場合は基本的な作成フォームを表示
         $sheets = Sheet::all();
-        $movie = Movie::findOrFail($request->input('movieId'));
-        $schedule = Schedule::findOrFail($request->input('scheduleId'));
+        $movie = Movie::first() ?? new Movie(); // 最初の映画またはダミー
+        $schedule = Schedule::first() ?? new Schedule(); // 最初のスケジュールまたはダミー
         return view('admin.reservations.create', compact('sheets', 'movie', 'schedule'));
     }
 
@@ -95,6 +100,7 @@ class AdminReservationsController extends Controller
         $reservation = Reservation::findOrFail($id);
 
         $validated = $request->validate([
+            'movie_id' => ['required'],
             'schedule_id' => ['required'],
             'sheet_id' => ['required'],
             'name' => ['required'],
