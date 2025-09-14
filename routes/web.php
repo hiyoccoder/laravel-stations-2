@@ -33,4 +33,4 @@ Route::get('/admin/schedules/{id}', [AdminMovieController::class, 'getAdminSched
 Route::get('/sheets', [SheetController::class, 'getSheets'])->name('sheets.index');
 Route::get('/movies/{movie_id}/schedules/{schedule_id}/sheets', [SheetController::class, 'moviesSchedulesSheets'])->name('movies.schedules.sheets');
 Route::get('/movies/{movie_id}/schedules/{schedule_id}/reservations/create', [SheetController::class, 'moviesSchedulesReservationsCreate'])->name('movies.schedules.reservations.create');
-Route::post('/reservations/store', [SheetController::class, 'ReservationsStore'])->name('reservations.store');
+Route::post('/reservations/store', [SheetController::class, 'reservationsStore'])->name('reservations.store');

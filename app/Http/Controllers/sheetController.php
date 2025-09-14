@@ -39,7 +39,7 @@ class SheetController extends Controller
         return view('movies.schedules.reservations.create', compact('sheets', 'movie', 'schedule'));
     }
 
-    public function ReservationsStore(CreateReservationRequest $request)
+    public function reservationsStore(CreateReservationRequest $request)
     {
         $validated = $request->validated();
 
@@ -54,7 +54,7 @@ class SheetController extends Controller
             $movie = Movie::find($schedule->movie_id);
 
             return redirect("/movies/{$movie->id}/schedules/{$validated['schedule_id']}/sheets?date={$validated['date']}")
-                ->withErrors(['seat' => 'その座席はすでに予約済みです']);
+                ->with('error', 'その座席はすでに予約済みです');
         }
 
         try {

@@ -8,6 +8,11 @@
 </head>
 
 <body>
+    @if(session('error'))
+    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb; border-radius: 4px;">
+        {{ session('error') }}
+    </div>
+    @endif
     <h1>座席配置</h1>
 
     <div>..スクリーン..</div>
