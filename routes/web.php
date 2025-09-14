@@ -23,6 +23,7 @@ Route::get('/admin/movies/{id}/edit', [AdminMovieController::class, 'AdminMovies
 Route::patch('/admin/movies/{id}/update', [AdminMovieController::class, 'AdminMoviesUpdate'])->name('admin.movies.update');
 Route::delete('/admin/movies/{id}/destroy', [AdminMovieController::class, 'AdminMoviesDestroy'])->name('admin.movies.destroy');
 Route::get('/admin/movies/{id}', [AdminMovieController::class, 'getAdminMoviesDetail'])->name('admin.movies.detail');
+Route::get('/admin/movies/{id}', [AdminMovieController::class, 'getAdminMoviesDetail'])->name('admin.movies.show');
 
 Route::get('/admin/schedules', [AdminMovieController::class, 'AdminSchedules'])->name('admin.schedules');
 Route::get('/admin/movies/{id}/schedules/create', [AdminMovieController::class, 'AdminSchedulesCreate'])->name('admin.schedules.create');

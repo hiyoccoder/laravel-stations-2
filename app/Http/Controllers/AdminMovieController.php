@@ -155,6 +155,7 @@ class AdminMovieController extends Controller
 
                 Schedule::create([
                     'movie_id' => $validated['movie_id'],
+                    'screen_id' => $validated['screen_id'],
                     'start_time' => $newStartTime->format('Y-m-d H:i:s'),
                     'end_time' => $newEndTime->format('Y-m-d H:i:s'),
                 ]);
@@ -199,7 +200,8 @@ class AdminMovieController extends Controller
                 );
 
                 $schedule->update([
-                    'movie_id' => $validated['movie_id'],  // ← movie_idも更新
+                    'movie_id' => $validated['movie_id'],
+                    'screen_id' => $validated['screen_id'],
                     'start_time' => $newStartTime,
                     'end_time' => $newEndTime,
                 ]);

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Carbon\Carbon;
+use App\Models\Schedule;
 
 class CreateScheduleRequest extends FormRequest
 {
@@ -26,6 +27,7 @@ class CreateScheduleRequest extends FormRequest
     {
         return [
             'movie_id' => ['required'],
+            'screen_id' => ['required', 'exists:screens,id'],
             'start_time_date' => ['required', 'date_format:Y-m-d', 'before_or_equal:end_time_date'],
             'start_time_time' => ['required', 'date_format:H:i'],
             'end_time_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:start_time_date'],
@@ -82,6 +84,25 @@ class CreateScheduleRequest extends FormRequest
             if ($durationInMinutes <= 5) {
                 $validator->errors()->add('start_time_time', '開始時刻と終了時刻の差は5分以上にしてください。');
                 $validator->errors()->add('end_time_time', '開始時刻と終了時刻の差は5分以上にしてください。');
+                return;
+            }
+
+            // 3. 同一スクリーン・時間重複のスケジュールチェック
+            $existingSchedule = Schedule::where('screen_id', $this->screen_id)
+                ->where(function ($query) use ($startDateTime, $endDateTime) {
+                    $query->whereBetween('start_time', [$startDateTime, $endDateTime])
+                          ->orWhereBetween('end_time', [$startDateTime, $endDateTime])
+                          ->orWhere(function ($subQuery) use ($startDateTime, $endDateTime) {
+                              $subQuery->where('start_time', '<=', $startDateTime)
+                                       ->where('end_time', '>=', $endDateTime);
+                          });
+                })
+                ->first();
+
+            if ($existingSchedule) {
+                $validator->errors()->add('screen_id', 'この時刻には既にスケジュールが登録されています。');
+                $validator->errors()->add('start_time_time', 'この時刻には既にスケジュールが登録されています。');
+                $validator->errors()->add('end_time_time', 'この時刻には既にスケジュールが登録されています。');
                 return;
             }
         } catch (\Exception $e) {

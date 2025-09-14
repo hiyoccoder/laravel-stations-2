@@ -20,7 +20,13 @@ return new class extends Migration
             $table->foreignId('movie_id')
                 ->constrained('movies')
                 ->onDelete('cascade')
-                ->comment('列');
+                ->comment('映画ID');
+
+            // screen_id - unsigned big integer, foreign key(screens), index
+            $table->foreignId('screen_id')
+                ->constrained('screens')
+                ->onDelete('cascade')
+                ->comment('スクリーンID');
 
             // start_time - datetime
             $table->datetime('start_time')->comment('上映開始時刻');

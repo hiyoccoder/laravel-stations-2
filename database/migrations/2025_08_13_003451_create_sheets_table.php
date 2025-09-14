@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id()->comment('ID');
             $table->integer('column')->comment('列');
             $table->string('row', 255)->comment('行');
+            $table->unsignedBigInteger('screen_id')->comment('スクリーンID');
+            $table->foreign('screen_id')->references('id')->on('screens');
         });
     }
 
