@@ -47,8 +47,11 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // sheetsテーブルのマスターデータ投入
+        // reservationsテーブルをクリア
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('reservations')->truncate();
+        
+        // sheetsテーブルのマスターデータ投入
         DB::table('sheets')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('sheets')->insert([
