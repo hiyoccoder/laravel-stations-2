@@ -30,9 +30,11 @@ class DatabaseSeeder extends Seeder
 
 
 
-        // reservationsテーブルとsheetsテーブルをクリア
+        // 関連テーブルをクリア
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('reservations')->delete(); // deleteを使用してより確実に
+        DB::table('reservations')->delete();
+        DB::table('schedules')->delete();
+        DB::table('movies')->delete();
         DB::table('sheets')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('sheets')->insert([

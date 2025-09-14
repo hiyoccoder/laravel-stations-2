@@ -160,7 +160,7 @@ class AdminMovieController extends Controller
                 ]);
             });
 
-            return redirect('/admin/schedules')->with('success', 'スケジュールが正常に作成されました。');
+            return redirect('/admin/movies/' . $validated['movie_id'])->with('success', 'スケジュールが正常に作成されました。');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'スケジュールの作成中にエラーが発生しました。'])
                 ->withInput();
@@ -216,7 +216,11 @@ class AdminMovieController extends Controller
     {
         $id = $request->route('scheduleId');
 
-        $schedule = Schedule::findOrFail($id); // 存在しない場合は自動で404
+        $schedule = Schedule::find($id);
+
+        if (!$schedule) {
+            abort(404);
+        }
 
         try {
             $schedule->delete();

@@ -55,6 +55,11 @@ class AdminReservationsController extends Controller
     {
         $validated = $request->validated();
 
+        // dateがない場合は今日の日付を設定
+        if (!isset($validated['date'])) {
+            $validated['date'] = now()->format('Y-m-d');
+        }
+
         // 重複予約チェック（アプリケーションレベル）
         $existingReservation = Reservation::where('schedule_id', $validated['schedule_id'])
             ->where('sheet_id', $validated['sheet_id'])
@@ -78,10 +83,7 @@ class AdminReservationsController extends Controller
                 'date' => $validated['date'],
             ]);
 
-            $schedule = Schedule::find($validated['schedule_id']);
-            $movie = Movie::find($schedule->movie_id);
-
-            return redirect("/movies/{$movie->id}")
+            return redirect("/admin/reservations/")
                 ->with('success', '予約が完了しました');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'An error occurred while creating the reservation.'])

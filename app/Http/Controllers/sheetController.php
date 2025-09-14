@@ -59,6 +59,11 @@ class SheetController extends Controller
     {
         $validated = $request->validated();
 
+        // dateがない場合は今日の日付を設定
+        if (!isset($validated['date'])) {
+            $validated['date'] = now()->format('Y-m-d');
+        }
+
         // 重複予約チェック（アプリケーションレベル）
         $existingReservation = Reservation::where('schedule_id', $validated['schedule_id'])
             ->where('sheet_id', $validated['sheet_id'])

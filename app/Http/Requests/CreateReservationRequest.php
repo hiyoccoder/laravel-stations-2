@@ -29,7 +29,7 @@ class CreateReservationRequest extends FormRequest
             'sheet_id' => ['required'],
             'name' => ['required'],
             'email' => ['required', 'email'],
-            'date' => ['required', 'date_format:Y-m-d']
+            'date' => ['nullable', 'date_format:Y-m-d']
         ];
     }
 
